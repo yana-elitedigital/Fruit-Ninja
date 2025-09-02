@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Ninja</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+</head>
+<body>
+    <!-- Main Menu Screen -->
+    <div class="menu-screen" id="mainMenu">
+        <div class="menu-content">
+            <div class="game-title">
+                <h1>🥷 FRUIT NINJA 🍎</h1>
+                <p class="subtitle">Slice the fruits, avoid the bombs!</p>
+            </div>
+            
+            <div class="menu-buttons">
+                <button class="menu-btn play-btn" onclick="startGame()">
+                    <span class="btn-icon">⚔️</span>
+                    <span>PLAY</span>
+                </button>
+                <button class="menu-btn" onclick="showInstructions()">
+                    <span class="btn-icon">📖</span>
+                    <span>HOW TO PLAY</span>
+                </button>
+                <button class="menu-btn" onclick="showHighScores()">
+                    <span class="btn-icon">🏆</span>
+                    <span>HIGH SCORES</span>
+                </button>
+            </div>
+            
+            <div class="menu-footer">
+                <p>Best Score: <span id="bestScore">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions Screen -->
+    <div class="menu-screen" id="instructionsScreen" style="display: none;">
+        <div class="menu-content">
+            <div class="instructions-content">
+                <h2>🎯 HOW TO PLAY</h2>
+                <div class="instruction-item">
+                    <span class="instruction-icon">👆</span>
+                    <p>Click and drag to slice fruits</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="instruction-icon">🍎</span>
+                    <p>Slice different fruits to earn points</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="instruction-icon">💣</span>
+                    <p>Avoid bombs - they end the game!</p>
+                </div>
+                <div class="instruction-item">
+                    <span class="instruction-icon">❤️</span>
+                    <p>Don't let fruits fall - you'll lose lives</p>
+                </div>
+            </div>
+            <button class="menu-btn back-btn" onclick="showMainMenu()">
+                <span class="btn-icon">🔙</span>
+                <span>BACK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- High Scores Screen -->
+    <div class="menu-screen" id="highScoresScreen" style="display: none;">
+        <div class="menu-content">
+            <h2>🏆 HIGH SCORES</h2>
+            <div class="scores-list" id="scoresList">
+                <div class="score-item">
+                    <span class="rank">1.</span>
+                    <span class="score-value" id="highScore1">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="rank">2.</span>
+                    <span class="score-value" id="highScore2">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="rank">3.</span>
+                    <span class="score-value" id="highScore3">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="rank">4.</span>
+                    <span class="score-value" id="highScore4">0</span>
+                </div>
+                <div class="score-item">
+                    <span class="rank">5.</span>
+                    <span class="score-value" id="highScore5">0</span>
+                </div>
+            </div>
+            <button class="menu-btn back-btn" onclick="showMainMenu()">
+                <span class="btn-icon">🔙</span>
+                <span>BACK</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Game Screen -->
+    <div class="game-container" id="gameContainer" style="display: none;">
+        <div class="game-window">
+            <canvas id="gameCanvas"></canvas>
+            
+            <!-- Game UI -->
+            <div class="game-ui">
+                <div class="ui-top">
+                    <div class="score-display">
+                        <div class="score-label">SCORE</div>
+                        <div class="score-value" id="score">0</div>
+                    </div>
+                    <div class="best-display">
+                        <div class="best-label">BEST</div>
+                        <div class="best-value" id="currentBest">0</div>
+                    </div>
+                </div>
+                
+                <div class="ui-bottom">
+                    <div class="lives-display" id="lives">
+                        <span class="heart">❤️</span>
+                        <span class="heart">❤️</span>
+                        <span class="heart">❤️</span>
+                    </div>
+                    <div class="game-controls">
+                        <button class="pause-btn" onclick="pauseGame()">⏸️</button>
+                        <button class="mute-btn" onclick="toggleMute()" id="muteBtn">🔊</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pause Screen -->
+            <div class="pause-screen" id="pauseScreen" style="display: none;">
+                <div class="pause-content">
+                    <h2>⏸️ PAUSED</h2>
+                    <div class="pause-buttons">
+                        <button class="menu-btn" onclick="resumeGame()">
+                            <span class="btn-icon">▶️</span>
+                            <span>RESUME</span>
+                        </button>
+                        <button class="menu-btn" onclick="showMainMenu()">
+                            <span class="btn-icon">🏠</span>
+                            <span>MAIN MENU</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Over Screen -->
+            <div class="game-over-screen" id="gameOverScreen" style="display: none;">
+                <div class="game-over-content">
+                    <h2>💀 GAME OVER!</h2>
+                    <div class="final-score">
+                        <div class="final-score-label">FINAL SCORE</div>
+                        <div class="final-score-value" id="finalScore">0</div>
+                    </div>
+                    <div class="new-best" id="newBestMessage" style="display: none;">
+                        <span class="best-icon">🎉</span>
+                        <span>NEW BEST SCORE!</span>
+                    </div>
+                    <div class="game-over-buttons">
+                        <button class="menu-btn play-again-btn" onclick="startGame()">
+                            <span class="btn-icon">🔄</span>
+                            <span>PLAY AGAIN</span>
+                        </button>
+                        <button class="menu-btn" onclick="showMainMenu()">
+                            <span class="btn-icon">🏠</span>
+                            <span>MAIN MENU</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="sliceSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFA" type="audio/wav">
+    </audio>
+    <audio id="bombSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFA" type="audio/wav">
+    </audio>
+    <audio id="scoreSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFA" type="audio/wav">
+    </audio>
+    <audio id="gameOverSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFA" type="audio/wav">
+    </audio>
+    <audio id="buttonSound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFA" type="audio/wav">
+    </audio>
+    <audio id="backgroundMusic" loop preload="auto" volume="0.3">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUfCz2V4PHBfCQFKYjO8tiJOQgVaLvt559NEA5Mp+PxtmMcBjiS2fPNeSsFJHfH8N2QQAoUXrTp66hVFA" type="audio/wav">
+    </audio>
+
+    <script src="game.js"></script>
+</body>
+</html>
